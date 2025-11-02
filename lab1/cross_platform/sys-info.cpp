@@ -35,10 +35,11 @@ std::string SysInfo::GetOSVersion() const {
 
 uint64_t SysInfo::GetTotalMemory() const {
 #ifdef _WIN32
-    MEMORYSTATUSEX memInfo;
-    memInfo.dwLength = sizeof(memInfo);
-    if (GlobalMemoryStatusEx(&memInfo)) {
-        return memInfo.ullTotalPhys;
+    MEMORYSTATUSEX memory_info;
+    memory_info.dwLength = sizeof(memory_info);
+
+    if (GlobalMemoryStatusEx(&memory_info)) {
+        return (double)memory_info.ullTotalPhys / (1024 * 1024 * 1024);  
     }
     return 0;
 #elif __linux__
@@ -52,10 +53,11 @@ uint64_t SysInfo::GetTotalMemory() const {
 
 uint64_t SysInfo::GetFreeMemory() const {
 #ifdef _WIN32
-    MEMORYSTATUSEX memInfo;
-    memInfo.dwLength = sizeof(memInfo);
-    if (GlobalMemoryStatusEx(&memInfo)) {
-        return memInfo.ullAvailPhys;
+    MEMORYSTATUSEX memory_info;
+    memory_info.dwLength = sizeof(memory_info);
+
+    if (GlobalMemoryStatusEx(&memory_info)) {
+        return (double)memory_info.ullAvailPhys / (1024 * 1024 * 1024);  
     }
     return 0;
 #elif __linux__

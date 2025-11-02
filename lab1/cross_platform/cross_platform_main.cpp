@@ -13,8 +13,7 @@ int main() {
     uint64_t usedMem = totalMem - freeMem;
     
     std::cout << std::fixed << std::setprecision(2);
-    std::cout << "RAM: " << usedMem / (1024.0 * 1024 * 1024) 
-              << " GB / " << totalMem / (1024.0 * 1024 * 1024) << " GB" << std::endl;
+    std::cout << "RAM: " << usedMem << " GB / " <<totalMem<< " GB" << std::endl;
     std::cout << "Free Memory: " << freeMem / (1024.0 * 1024 * 1024) << " GB" << std::endl;
     
     return 0;

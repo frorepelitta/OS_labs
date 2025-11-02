@@ -4,6 +4,18 @@
 #include <string>
 #include <cstdint>
 
+
+#ifdef _WIN32
+    #include <Windows.h>
+    #include <VersionHelpers.h>
+    #include <lmcons.h>
+#elif __linux__
+    #include <sys/utsname.h>
+    #include <sys/sysinfo.h>
+    #include <fstream>
+    #include <unistd.h>
+#endif
+
 class SysInfo
 {
 public:

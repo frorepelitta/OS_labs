@@ -1,16 +1,15 @@
 #include "lib.h"
 
 
-void init_matrix_random(int** matrix, int N) {
+void init_matrix_random(int* matrix, int N) {
     for (int i = 0; i < N; ++i) {
         for (int j = 0; j < N; ++j) {
-            matrix[i][j] = std::rand() % 1000;
+            matrix[i * N + j] = std::rand() % 1000;
         }
     }
 }
 
 int main() {
-    std::srand(std::time(0));
     int N;
     int n; 
 
@@ -19,15 +18,11 @@ int main() {
     std::cout << "Введите количество потоков n: ";
     std::cin >> n;
 
-    int** A = new int*[N];
-    int** B = new int*[N];
-    int** C = new int*[N];
+    std::srand(std::time(0));
 
-    for (int i = 0; i < N; ++i) {
-        A[i] = new int[N];
-        B[i] = new int[N];
-        C[i] = new int[N]; 
-    }
+    int* A = new int[N * N];
+    int* B = new int[N * N];
+    int* C = new int[N * N]; 
 
     init_matrix_random(A, N);
     init_matrix_random(B, N);
@@ -40,21 +35,21 @@ int main() {
     auto start_time = std::chrono::high_resolution_clock::now();
 
     for (int i = 0; i < n; ++i) {
-        int start = current_row;
-        int end = current_row + rows_per_thread + (i < remaining_rows ? 1 : 0);
+        int start_row = current_row;
+        int end_row = current_row + rows_per_thread + (i < remaining_rows ? 1 : 0);
         
-        threads.emplace_back([&, start, end, A, B, C]() {
-            for (int row = start; row < end; ++row) {
+        threads.emplace_back([&, start_row, end_row]() {
+            for (int row = start_row; row < end_row; ++row) {
                 for (int j = 0; j < N; ++j) {
                     int sum = 0;
                     for (int k = 0; k < N; ++k) {
-                        sum += A[row][k] * B[k][j];
+                        sum += A[row * N + k] * B[k * N + j];
                     }
-                    C[row][j] = sum;
+                    C[row * N + j] = sum;
                 }
             }
         });
-        current_row = end;
+        current_row = end_row;
     }
 
     for (auto& thread : threads) {
@@ -68,6 +63,10 @@ int main() {
     auto duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
     std::cout << "Умножение матриц завершено с использованием " << n << " потоков." << std::endl;
     std::cout << "Время выполнения кода: " << duration_ms.count() << " миллисекунд." << std::endl;
+
+    delete[] A;
+    delete[] B;
+    delete[] C;
 
     return 0;
 }

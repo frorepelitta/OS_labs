@@ -7,7 +7,7 @@
 #include <chrono>
 #include <vector>
 
-void init_matrix_random(int** matrix, int N);
+void init_matrix_random(int*, int) ;
 
 
 #endif

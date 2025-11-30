@@ -1,14 +1,13 @@
 #include "lib.h"
 
 
-void init_matrix_random(std::vector<std::vector<int>>& matrix, int N) {
+void init_matrix_random(int** matrix, int N) {
     for (int i = 0; i < N; ++i) {
         for (int j = 0; j < N; ++j) {
             matrix[i][j] = std::rand() % 1000;
         }
     }
 }
-
 
 int main() {
     std::srand(std::time(0));
@@ -20,9 +19,15 @@ int main() {
     std::cout << "Введите количество потоков n: ";
     std::cin >> n;
 
-    std::vector<std::vector<int>> A(N, std::vector<int>(N, 0));
-    std::vector<std::vector<int>> B(N, std::vector<int>(N, 0));
-    std::vector<std::vector<int>> C(N, std::vector<int>(N, 0)); 
+    int** A = new int*[N];
+    int** B = new int*[N];
+    int** C = new int*[N];
+
+    for (int i = 0; i < N; ++i) {
+        A[i] = new int[N];
+        B[i] = new int[N];
+        C[i] = new int[N]; 
+    }
 
     init_matrix_random(A, N);
     init_matrix_random(B, N);
@@ -38,7 +43,7 @@ int main() {
         int start = current_row;
         int end = current_row + rows_per_thread + (i < remaining_rows ? 1 : 0);
         
-        threads.emplace_back([&, start, end]() {
+        threads.emplace_back([&, start, end, A, B, C]() {
             for (int row = start; row < end; ++row) {
                 for (int j = 0; j < N; ++j) {
                     int sum = 0;

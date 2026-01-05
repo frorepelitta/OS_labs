@@ -9,5 +9,6 @@
 #include <unistd.h>
 #include <cstdlib>
 #include <ctime>
+#include <sys/resource.h>
 
 #endif 
